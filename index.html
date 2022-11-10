@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width" />
+  <title>Login</title>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <link rel="stylesheet" href="./styles.css" />
+  <link rel="stylesheet" href="./spinner.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="./modal/source/css/modaal.css" type="text/css" media="all" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+
+<body>
+  <div class="container">
+    <div class="card-login animate__animated animate__swing">
+      <h1 class="login-title">Login</h1>
+      <form id="login-form">
+        <input class="form-input" type="number" name="DNI" value="" maxlength="8" id="DNI" placeholder="DNI" />
+        <input class="form-input" type="password" name="CONTRASENA" value="" id="CONTRASEÑA" placeholder="Contraseña" />
+        <div class="footer-div">
+          <button id="" class="form-button" href="#" type="submit">
+            Ingresar
+          </button>
+        </div>
+        <a class="remember modaal inline" href="#inline" data-modaal-type="inline" data-modaal-animation="fade"
+          data-modaal-width="600">Olvidaste tu contraseña?</a>
+      </form>
+    </div>
+    <center id="spinner" style="position: absolute">
+      <div class="swapping-squares-spinner" :style="spinnerStyle">
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+        <div class="square"></div>
+      </div>
+    </center>
+  </div>
+  <div id="inline" style="display: none">
+    <h2 style="padding-bottom: 15px">
+      Ingresa tu nro. de celular para recuperar tu contraseña
+    </h2>
+    <input class="input" type="number" style="text-align: center" />
+    &nbsp;
+    <button class="button">Recuperar mi contraseña</button>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" charset="utf-8"></script>
+  <script src="./modal/source/js/modaal.js" charset="utf-8"></script>
+  <script src="./main.js" charset="utf-8"></script>
+</body>
+
+</html>

@@ -1,0 +1,6 @@
+{
+  "dependencies": {
+    "@easepick/bundle": "^1.2.0",
+    "lightpick": "^1.6.2"
+  }
+}

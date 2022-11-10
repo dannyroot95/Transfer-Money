@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link rel="stylesheet" type="text/css" media="screen" href="../css/table.css" />
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../../../modal/micromodal.css" type="text/css" media="all" />
+  <script src="../../../modal/micromodal.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js" charset="utf-8"></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <script src="/main.js"></script>
+  <link rel="stylesheet" href="../../../spinner.css" type="text/css" media="all" />
+  <style>
+    .usercard {
+      cursor: pointer;
+      position: relative;
+      height: 0;
+      z-index: 0;
+      padding-bottom: 120%;
+      --offset-multiplier: 4px;
+      transition: transform 0.6s ease;
+      --translate: 0;
+      transform: translate(var(--translate), var(--translate));
+    }
+
+    .usercard:hover {
+      --offset-multiplier: 6px;
+    }
+
+    .usercard:hover {
+      --translate: calc(-1px * (var(--cards) - 1));
+      transition: transform 0.3s ease;
+    }
+
+    .child {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      padding: 0 16px;
+      box-sizing: border-box;
+      background: #fff;
+      box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1), 0px -4px 8px rgba(255, 255, 255, 0.8);
+      border-radius: 6px;
+      transition: inherit;
+      --translate: calc(var(--offset) * var(--offset-multiplier));
+      transform: translate(var(--translate), var(--translate));
+      z-index: 5;
+    }
+
+    .child:nth-child(1) {
+      --offset: 0;
+      z-index: 4;
+    }
+
+    .child:nth-child(2) {
+      --offset: 1;
+      z-index: 3;
+    }
+
+    .child:nth-child(3) {
+      --offset: 2;
+      z-index: 2;
+    }
+
+    .child:nth-child(4) {
+      --offset: 3;
+      z-index: 1;
+    }
+
+    .child:nth-child(5) {
+      --offset: 4;
+      z-index: 0;
+    }
+  </style>
+</head>
+
+<body>
+  <div>
+    <div class="top-cash">
+      <div id="div-newcash">
+        <div class="looping-rhombuses-spinner">
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+        </div>
+      </div>
+      <div id="div-optionscash">
+        <div class="looping-rhombuses-spinner">
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+        </div>
+      </div>
+      <div id="div-viewcash">
+        <div class="looping-rhombuses-spinner">
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+          <div class="rhombus"></div>
+        </div>
+      </div>
+    </div>
+    <div class="checkout-container" id="cards">
+
+    </div>
+    <div class="sk-folding-cube" id="usersSpinner">
+      <div class="sk-cube1 sk-cube"></div>
+      <div class="sk-cube2 sk-cube"></div>
+      <div class="sk-cube4 sk-cube"></div>
+      <div class="sk-cube3 sk-cube"></div>
+    </div>
+  </div>
+
+  <div class="modal micromodal-slide" id="modal-1" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-1" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title"
+        style="max-width: 170vh; width: 170vh;">
+        <header class="modal__header">
+          <h2 style="text-align: center;">
+            Transferencias
+          </h2>
+          <button id="closeModal1" style="cursor: pointer" class="modal__close" aria-label="Close modal"
+            data-micromodal-close></button>
+        </header>
+        <div class="add animate__animated animate__bounceInDown" id="topitems2">
+          <input id="topsearch2" type="text" placeholder="Buscar">
+          <div style="padding-left: 20px; display: flex;">
+            <div style="padding-right: 8px;">
+              <select class="btnOption2" id="filters">
+                <option value="0">Codigo</option>
+                <option value="1">Monto</option>
+                <option value="2">Estado</option>
+                <option value="3">Local (Emisión)</option>
+                <option value="4">Local (Recepción)</option>
+              </select>
+            </div>
+            <div>
+              <input type="date" class="btnCalendar" id="dateCalendar">
+            </div>
+          </div>
+        </div>
+
+        <!-- Table -->
+
+        <div class="row">
+          <div class="col">
+            <div class="card shadow">
+              <div class="table-responsive">
+                <table class="table align-items-center table-flush" id="tableUsers">
+                  <thead class="thead-light">
+                    <tr>
+                      <th scope="col" onclick="sortTable(0)" id="tr1">
+                        <div style="display: flex; align-items: center; justify-content: flex-start;">
+                          Cod.Tranferencia&nbsp;
+                          <ion-icon id="tr1icon" name="caret-up-outline" style="font-size: 15px;"></ion-icon>
+                        </div>
+                      </th>
+                      <th scope="col" onclick="sortTable(1)" id="tr2">
+                        <div style="display: flex; align-items: center; justify-content: flex-start;">
+                          Monto&nbsp;
+                          <ion-icon id="tr2icon" name="caret-up-outline" style="font-size: 15px;"></ion-icon>
+                        </div>
+                      </th>
+                      <th scope="col" onclick="sortTable(2)" id="tr3">
+                        <div style="display: flex; align-items: center; justify-content: flex-start;">
+                          Estado&nbsp;
+                          <ion-icon id="tr3icon" name="caret-up-outline" style="font-size: 15px;"></ion-icon>
+                        </div>
+                      </th>
+                      <th scope="col" onclick="sortTable(3)" id="tr4">
+                        <div style="display: flex; align-items: center; justify-content: flex-start;">
+                          Local de emisión&nbsp;
+                          <ion-icon id="tr4icon" name="caret-up-outline" style="font-size: 15px;"></ion-icon>
+                        </div>
+                      </th>
+                      <th scope="col" onclick="sortTable(4)" id="tr5">
+                        <div style="display: flex; align-items: center; justify-content: flex-start;">
+                          Local de recepción&nbsp;
+                          <ion-icon id="tr5icon" name="caret-up-outline" style="font-size: 15px;"></ion-icon>
+                        </div>
+                      </th>
+                      <th scope="col">Detalles</th>
+                    </tr>
+                  </thead>
+                  <tbody id="tbody"></tbody>
+                </table>
+                <div class="sk-folding-cube" id="transfersSpinner">
+                  <div class="sk-cube1 sk-cube"></div>
+                  <div class="sk-cube2 sk-cube"></div>
+                  <div class="sk-cube4 sk-cube"></div>
+                  <div class="sk-cube3 sk-cube"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ======= Micromodal ======-->
+
+  <div class="modal micromodal-slide" id="modal-2" aria-hidden="true">
+    <div class="modal__overlay" tabindex="-2" data-micromodal-close>
+      <div class="modal__container" role="dialog" aria-modal="true" aria-labelledby="modal-1-title"
+        style="max-width: 130vh; width: 100vh;">
+        <header class="modal__header">
+          <h2 class="modal__title" id="modal-1-title">Detalle de transferencia</h2>
+          <h2 class="modal__title" id="codetransfer">11</h2>
+          <button style="cursor: pointer" class="modal__close" aria-label="Close modal" data-micromodal-close></button>
+        </header>
+        <main class="modal__content" id="modal-1-content">
+          <div>
+            <div class="form-item">
+              <label class="form-label-modal">Enviado desde</label>
+              <label class="form-label-modal" id="emission"></label>
+              <label class="form-label-modal"
+                style="font-weight: bold;margin-left: -40px;margin-right:-40px;">&#8594;</label>
+              <label class="form-label-modal" id="reception"></label>
+            </div>
+            <div class="form-item">
+              <label class="form-label-modal" for="emisor">
+                <ion-icon name="disc-outline" style="color: red;"></ion-icon> Emisor
+              </label>
+              <label class="form-label-modal" id="emisor"></label>
+            </div>
+            <div class="form-item">
+              <label class="form-label-modal" for="Names">
+                <ion-icon name="disc-outline" style="color: #049743;"></ion-icon> Receptor
+              </label>
+              <label class="form-label-modal" id="receptor"></label>
+            </div>
+            <div class="form-item">
+              <label class="form-label-modal" for="Names">Monto</label>
+              <label class="form-label-modal" id="amount" style="font-weight: bold;color:#049743;"></label>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+  <script src="../js/s_admin/checkout.js"></script>
+</body>
+
+</html>
